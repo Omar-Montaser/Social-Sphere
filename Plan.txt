@@ -1,0 +1,19 @@
+1- User class:
+    use a dynamic list for the friends list
+    Add methods:
+    addFriend(int), removeFriend(int), isFriend(int), getFriends(),
+
+2-Graph
+    An adjacency list of user ids connected together 
+    Might later implement as a hashmap to map usernames instead if ids as our graph
+
+addUser, removeUser. 
+addFriendship, removeFriendship.
+suggestFriends: Use the priority queue to rank friend recommendations.
+
+    
+3-Priority queue
+    Use a binary heap:
+    Represent the heap as a dynamic array.
+``  Maintain the max-heap property.
+    Provide methods for insertion, removal, and heapify operations.
