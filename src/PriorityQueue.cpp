@@ -1,67 +1,105 @@
-#include "PriorityQueue.h"
-#include <stdexcept>  
-#include <algorithm> 
+#include "PriorityQueue.hpp"
+#include <iostream>
 
-void PriorityQueue::heapify(int idx) {
-    int left = 2 * idx + 1;
-    int right = 2 * idx + 2;
-    int largest = idx;
+using namespace std;
 
-    if (left < heap.size() && heap[left] < heap[largest]) {
-        largest = left;
-    }
+inline bool PriorityQueue::compare(const Metadata& m1, const Metadata& m2) {
+    return (m1.depth < m2.depth) || (m1.depth == m2.depth && m1.frequency > m2.frequency);
+}
 
-    if (right < heap.size() && heap[right] < heap[largest]) {
-        largest = right;
-    }
+inline void PriorityQueue::swap(Metadata& m1, Metadata& m2) {
+    Metadata temp = m1;
+    m1 = m2;
+    m2 = temp;
+}
 
-    if (largest != idx) {
-        std::swap(heap[idx], heap[largest]);
-        heapify(largest);
+void PriorityQueue::heapifyDown(int index) {
+    int left, right, highestPriority;
+    while (true) {
+        left = 2 * index + 1;
+        right = 2 * index + 2;
+        highestPriority = index;
+
+        if (left < size && compare(heap[left], heap[highestPriority])) {
+            highestPriority = left;
+        }
+        if (right < size && compare(heap[right], heap[highestPriority])) {
+            highestPriority = right;
+        }
+
+        if (highestPriority == index) break;
+
+        swap(heap[index], heap[highestPriority]);
+        index = highestPriority;
     }
 }
 
-void PriorityQueue::push(const Metadata& item) {
-    heap.push_back(item);
-    int idx = heap.size() - 1;
-
-    // Move the new element to the correct position in the heap
-    while (idx > 0 && heap[(idx - 1) / 2] < heap[idx]) {
-        std::swap(heap[idx], heap[(idx - 1) / 2]);
-        idx = (idx - 1) / 2;
+void PriorityQueue::buildHeap() {
+    for (int i = (size / 2) - 1; i >= 0; --i) {
+        heapifyDown(i);
     }
 }
 
-// Pop the top element from the heap
+void PriorityQueue::resizeHeap() {
+    capacity *= 2;
+    Metadata* newHeap = new Metadata[capacity];
+    for (int i = 0; i < size; ++i) {
+        newHeap[i] = heap[i];
+    }
+    delete[] heap;
+    heap = newHeap;
+}
+
+PriorityQueue::PriorityQueue(): size(0), capacity(2) {
+    heap = new Metadata[capacity];
+}
+PriorityQueue::PriorityQueue(Metadata* data, int dataSize) : size(dataSize), capacity(dataSize > 0 ? dataSize * 2 : 2) {
+    heap = new Metadata[capacity];
+    for (int i = 0; i < dataSize; ++i) {
+        heap[i] = data[i];
+    }
+    buildHeap();
+}
+
+PriorityQueue::~PriorityQueue() {
+    delete[] heap;
+}
+
+void PriorityQueue::push(const Metadata& m) {
+    if (size == capacity) {
+        resizeHeap();
+    }
+    heap[size++] = m;
+    int index = size - 1;
+    while (index > 0 && compare(heap[index], heap[(index - 1) / 2])) {
+        swap(heap[index], heap[(index - 1) / 2]);
+        index = (index - 1) / 2;
+    }
+}
+
 Metadata PriorityQueue::pop() {
-    if (heap.empty()) {
-        throw std::runtime_error("Heap is empty");
+    if (empty()) {
+        cout << "Error: Priority queue is empty." << endl;
+        return { NULL, -1, -1 };
     }
-
-    // Swap the root element with the last element and remove the last element
-    std::swap(heap[0], heap[heap.size() - 1]);
-    Metadata top = heap.back();
-    heap.pop_back();
-
-    // Reheapify the heap after removal
-    heapify(0);
+    Metadata top = heap[0];
+    heap[0] = heap[--size];
+    heapifyDown(0);
     return top;
 }
 
-// Check if the heap is empty
-bool PriorityQueue::empty() const {
-    return heap.empty();
-}
-
-// Get the size of the heap
-int PriorityQueue::size() const {
-    return heap.size();
-}
-
-// Peek at the top element without removing it
-const Metadata& PriorityQueue::top() const {
-    if (heap.empty()) {
-        throw std::runtime_error("Heap is empty");
+Metadata PriorityQueue::top() const {
+    if (empty()) {
+        cout << "Error: Priority queue is empty." << endl;
+        return { NULL, -1, -1 };
     }
     return heap[0];
+}
+
+bool PriorityQueue::empty() const {
+    return size == 0;
+}
+
+int PriorityQueue::getSize() const {
+    return size;
 }
