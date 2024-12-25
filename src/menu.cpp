@@ -7,19 +7,19 @@
 #include <string>
 
 using namespace std;
-Vector<User> User::database;
 void clearScreen() {
     system("CLS");
 }
 
-void displayMainMenu() {
+void displayMainMenu(Graph& network) {
+    clearScreen();
     cout << "--- Welcome! ---\n" << endl;
     cout << "1. Login\n2. Signup\n[ESC] Exit\n" << endl;
     cout << "Choose an option: ";
-    handleMainMenuChoice();
+    handleMainMenuChoice(network);
 }
 
-void displayPage(bool isLogin) {
+void displayPage(bool isLogin,Graph& network) {
     string username;
     string password;
     bool showPassword = false;
@@ -33,7 +33,7 @@ void displayPage(bool isLogin) {
         if (_kbhit()) {
             char ch = _getch();
 
-            if (ch == 27) return;
+            if (ch == 27) displayMainMenu(network);
 
             if (ch == '\r') {
                 if (!showPassword) {
@@ -46,15 +46,14 @@ void displayPage(bool isLogin) {
                         User::searchUser(username, found, foundUser);//
                         if (found) {
                             if (foundUser.password == password)
-                                displayMenu(foundUser);
+                                displayMenu(foundUser,network);
                             else
                                 cout << "Wrong password" << endl;
                         } else {
-                            displayPage(isLogin);
+                            displayPage(isLogin,network);
                         }
-                    } else {
-                        signup(username, password);
                     }
+                    else signup(username, password, network);
                 }
                 continue;
             }
@@ -82,12 +81,20 @@ void displayPage(bool isLogin) {
     }
 }
 
-void signup(string username, string password){// is it done?
+void signup(string username, string password, Graph& network){
+
+     for (int i = 0; i < User::database.getSize(); ++i)
+        if (User::database[i].username == username) {
+            cout << "Username already exists. Please try again.\n";
+            return;
+        }
     User user(username, password);
     User::database.push_back(user);
+    Vector<int> v;
+    network.adjList.push_back(v);
+    displayMenu(user,network);
 }
-
-void handleMainMenuChoice() {
+void handleMainMenuChoice(Graph& network) {
     while (true) {
         if (_kbhit()) {
             char ch = _getch();
@@ -97,13 +104,12 @@ void handleMainMenuChoice() {
                 cout << "Exiting...\n";
                 exit(0);
             }
-
             switch (ch) {
             case '1'://login
-                displayPage(true);
+                displayPage(true,network);
                 return;
             case '2'://signup
-                displayPage(false);
+                displayPage(false,network);
                 return;
             default://any other input
                 clearScreen();

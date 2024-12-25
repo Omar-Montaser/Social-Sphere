@@ -3,12 +3,12 @@
 #include "Vector.hpp"
 using namespace std;
 class Metadata {
-    //This is for a user's friends
-    //Will be calculated for each when traversing to find the recommended friends
+    //will be calculated for each of my user's
+    //friends when traversing to find the recommended ones suing the priority queue
     public:
-        int userID;//friend id
+        int userID;
         int depth;
-        int frequency;//no. of mutual friends
+        int frequency;
         
         Metadata() : userID(0), depth(0), frequency(0) {}
         Metadata(int id,int d=0, int f=0) : userID(id), depth(d), frequency(f) {}
@@ -31,7 +31,7 @@ class User {
     User();
     User(string name, string password);
 
-    static void initializeDatabase();
+    static void initializeDatabase(int size);
     static void searchUser(string name, bool& found,User& foundUser);
     static void searchUser(string name, bool& found);
 };

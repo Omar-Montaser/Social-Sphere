@@ -26,11 +26,10 @@ const Vector<int>& Graph::getFriends(int userID) const {
 Vector<Vector<int>>& Graph::getAdjList(){
     return adjList;
 }
-int Graph::size() const{ //returns total number of nodes
+int Graph::size() const{
     return adjList.getSize();
 }
 Vector<Metadata> Graph::bfs(int currentUser) const {
-    //using bfs
     Vector<int> freq(adjList.getSize(), 0);
     Vector<int> visited(adjList.getSize(), 0);
     Queue<Metadata> q;
@@ -45,21 +44,20 @@ Vector<Metadata> Graph::bfs(int currentUser) const {
 
         for (int i = 0; i < adjList[current.userID].getSize(); ++i) {
             int id = adjList[current.userID][i];
-            if (current.depth == 1) {
+            if (current.depth == 1)
                 freq[id]++;
-            }
+            
             if (!visited[id]) {
                 visited[id] = 1;
                 if (current.depth > 0)
                     res.push_back(Metadata(id, current.depth + 1));
-    
                 q.enqueue(Metadata(id, current.depth + 1, freq[id]));
             }
         }
     }
 
-for(int i=0;i<res.getSize();i++){
+for(int i=0;i<res.getSize();i++)
         res[i].frequency=freq[res[i].userID];
-    }
+
     return res;
 }

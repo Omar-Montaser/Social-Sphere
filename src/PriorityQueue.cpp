@@ -9,8 +9,8 @@ inline bool PriorityQueue::compare(const Metadata& m1, const Metadata& m2) {
 
 inline void PriorityQueue::swap(Metadata& m1, Metadata& m2) {
     Metadata temp = m1;
-    m1 = m2;
-    m2 = temp;
+    m1=m2;
+    m2=temp;
 }
 
 void PriorityQueue::heapifyDown(int index) {
@@ -20,12 +20,11 @@ void PriorityQueue::heapifyDown(int index) {
         right = 2 * index + 2;
         highestPriority = index;
 
-        if (left < size && compare(heap[left], heap[highestPriority])) {
+        if (left<size && compare(heap[left], heap[highestPriority]))
             highestPriority = left;
-        }
-        if (right < size && compare(heap[right], heap[highestPriority])) {
+
+        if (right<size && compare(heap[right], heap[highestPriority]))
             highestPriority = right;
-        }
 
         if (highestPriority == index) break;
 
@@ -35,17 +34,17 @@ void PriorityQueue::heapifyDown(int index) {
 }
 
 void PriorityQueue::buildHeap() {
-    for (int i = (size / 2) - 1; i >= 0; --i) {
+    for (int i = (size / 2) - 1; i >= 0; --i)
         heapifyDown(i);
-    }
+
 }
 
 void PriorityQueue::resizeHeap() {
     capacity *= 2;
     Metadata* newHeap = new Metadata[capacity];
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i)
         newHeap[i] = heap[i];
-    }
+
     delete[] heap;
     heap = newHeap;
 }
@@ -66,12 +65,12 @@ PriorityQueue::~PriorityQueue() {
 }
 
 void PriorityQueue::push(const Metadata& m) {
-    if (size == capacity) {
+    if (size == capacity)
         resizeHeap();
-    }
+
     heap[size++] = m;
     int index = size - 1;
-    while (index > 0 && compare(heap[index], heap[(index - 1) / 2])) {
+    while (index>0 && compare(heap[index], heap[(index-1)/2])) {
         swap(heap[index], heap[(index - 1) / 2]);
         index = (index - 1) / 2;
     }
@@ -91,7 +90,7 @@ Metadata PriorityQueue::pop() {
 Metadata PriorityQueue::top() const {
     if (empty()) {
         cout << "Error: Priority queue is empty." << endl;
-        return { NULL, -1, -1 };
+        return {NULL, -1, -1};
     }
     return heap[0];
 }

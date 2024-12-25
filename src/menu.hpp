@@ -1,10 +1,9 @@
 #pragma once
 
 #include <iostream>
-
+#include "Graph.hpp"
 void clearScreen();
-void displayMainMenu();
-void displayPage(const char* username, const char* password, bool isLogin, bool showPassword);
-void handleInput(bool isLogin);
-void signup(string username, string password);
-void handleMainMenuChoice();
+void displayMainMenu(Graph& network);
+void displayPage(bool isLogin, Graph& network);
+void signup(string username, string password,Graph& network);
+void handleMainMenuChoice(Graph& network);

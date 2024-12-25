@@ -129,8 +129,8 @@ void Queue<QueueElement>::dequeue() {
         Queue<QueueElement>::NodePointer ptr = myFront;
         myFront = myFront->next;
         delete ptr;
-        if (myFront == NULL)     // queue is now empty
-            myBack = NULL;
+        if (myFront==NULL)
+            myBack=NULL;
     } else {
         cerr << "Queue Empty!" << endl;
     }
@@ -155,10 +155,10 @@ int Queue<QueueElement>::size() {
 
 template <typename QueueElement>
 QueueElement Queue<QueueElement>::bottom() {
-    if (!empty()) {
+    if (!empty()) 
         return myBack->data;
-    }
-    cerr << "Queue empty: no bottom element -- returning garbage value\n";
+    
+    cerr<<"Queue empty: no bottom element -- returning garbage value\n";
     QueueElement garbage;
     return garbage;
 }

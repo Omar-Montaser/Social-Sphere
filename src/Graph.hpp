@@ -19,7 +19,7 @@ public:
     const Vector<int>& getFriends(int userID) const;
     Vector<Vector<int>>& getAdjList();
     Vector<Metadata> bfs(int currentUser) const;
-    
+
     int size() const;
     
 };

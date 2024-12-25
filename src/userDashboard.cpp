@@ -9,20 +9,22 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include 
+#include "menu.hpp"
+#include "userDashboard.hpp"
 
 using namespace std;
 
-void loginScreen() {
+void loginScreen(Graph& network) {
     while (true) {
         clearScreen();
-        displayMainMenu();
-        handleMainMenuChoice();
+        displayMainMenu(network);
+        handleMainMenuChoice(network);
     }
 }
 
-void viewFriends(int currentUser, Graph& network) {
+void viewFriends(User& user, Graph& network) {
 system("cls");
+int currentUser = user.id;
 while (true) {
     Vector<int> userFriends = network.getFriends(currentUser);
 
@@ -38,7 +40,7 @@ while (true) {
         cout << "User ID: " << friendId
              << " | Username: " << User::database[friendId].username << endl;
     }
-    cout<<"Choose a userId to removeor press esc to go back to the dashboard.: ";
+    cout<<"Choose a userId to remove or press esc to go back to the dashboard.: ";
     int choice = _getch();
     if(choice == 27) break;
     int id; cin>>id;
@@ -49,7 +51,8 @@ while (true) {
     if(userFriends.getSize()!=0) network.removeFriendship(currentUser, id);
     }
 }
-void addFriend(int currentUser, Graph& network) {
+void addFriend(User& user, Graph& network) {
+    int currentUser = user.id; 
     system("cls");
     while (true) {
         cout << "Enter the ID of the friend you want to add (or press ESC to go back): ";
@@ -61,13 +64,11 @@ void addFriend(int currentUser, Graph& network) {
         int friendId;
         cin >> friendId;
 
-        // Validate the friendId
-        if (friendId < 0 || friendId >= network.size()||friendId==currentUser) {
+        if (friendId < 0 || friendId >= network.size()) {
             cout << "Invalid user ID. Try again.\n";
             continue;
         }
 
-        // Check if friendId is already a friend
         Vector<int> friends = network.getFriends(currentUser);
         bool found = false;
         for (int i = 0; i<friends.getSize(); ++i) {
@@ -80,24 +81,22 @@ void addFriend(int currentUser, Graph& network) {
             cout<<"User is already a friend. Try again.\n";
             continue;
         }
-        // Add friendship
         network.addFriendship(currentUser, friendId);
         cout << "Friend added successfully.\n";
     }
 }
 
-
-void viewFriendRecommendations(int currentUser, Graph& network) {
-system("cls");
-    PriorityQueue recommendations = recommendFriends(network, currentUser);
+void viewFriendRecommendations(User& currentUser, Graph& network) {
+    system("cls");
+    PriorityQueue recommendations = recommendFriends(currentUser, network);
     cout << "Recommended friends:\n";
     displayRecommendations(recommendations);
     cout << "Press any key to go back to the dashboard.\n";
     _getch();
 }
 
-PriorityQueue recommendFriends(Graph& userIds, int currentUser) {
-    Vector<Metadata> recommendations = userIds.bfs(currentUser);
+PriorityQueue recommendFriends(User currentUser,Graph& network) {
+    Vector<Metadata> recommendations = network.bfs(currentUser.id);
     PriorityQueue pq;
     for (int i = 0; i < recommendations.getSize(); ++i)
         pq.push(recommendations[i]);
@@ -107,8 +106,9 @@ PriorityQueue recommendFriends(Graph& userIds, int currentUser) {
 void displayRecommendations(PriorityQueue& pq) {
     while (!pq.empty()) {
         Metadata rec = pq.pop();
-        cout << "User: " << User::database[rec.userID].username
-             << ", Mutual Friends: " <<rec.frequency<< endl;
+        cout << "User: " << User::database[rec.userID].username;
+        (rec.frequency!=0)?(cout<< "\t\t, Mutual Friends: " <<rec.frequency):(cout<<"");
+        cout<<endl;
     }
 }
 
@@ -153,8 +153,7 @@ void viewSocialSphere(Graph& network) {
         system("start graph.png");
     }
 }
-
-void displayMenu(User currentUser) {
+void displayMenu(User& currentUser,Graph& network) {
     while (true) {
         system("CLS");
         cout << "----- User Dashboard -----\n";
@@ -168,19 +167,19 @@ void displayMenu(User currentUser) {
 
         switch (choice) {
         case '1':
-            viewFriends();
+           viewFriends(currentUser,network);
             break;
         case '2':
-            addFriend();
+            addFriend(currentUser,network);
             break;
         case '3':
-            viewFriendRecommendations();
+            viewFriendRecommendations(currentUser,network);
             break;
         case '4':
-            viewSocialSphere();
+            viewSocialSphere(network);
             break;
-        case '27':
-            loginScreen();
+        case 27:
+            loginScreen(network);
             break;
         default:
             cout << "Invalid choice. Press any key to try again.\n";
