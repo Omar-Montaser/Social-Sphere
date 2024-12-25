@@ -56,7 +56,7 @@ void addFriend(User& user, Graph& network) {
     system("cls");
     while (true) {
         cout << "Enter the ID of the friend you want to add (or press ESC to go back): ";
-        
+
         char input = _getch();
         if (input == 27) // ESC key
             break;
@@ -133,12 +133,14 @@ void viewSocialSphere(Graph& network) {
             nodeColor += hexDigits[lightComponent / 16];
             nodeColor += hexDigits[lightComponent % 16];
         }
-
-        dotFile << "    " << node << " [style=filled, fillcolor=\"" << nodeColor << "\"];\n";
+        string nodeLabel = User::database[node].username;
+        dotFile << "    " <<nodeLabel<< " [style=filled, fillcolor=\"" << nodeColor << "\"];\n";
 
         for (int i = 0; i < network.getFriends(node).getSize(); ++i) {
             if (node < network.getFriends(node)[i]) {
-                dotFile << "    " << node << " -- " << network.getFriends(node)[i] << ";\n";
+                string nodeLabel = User::database[node].username;
+                string friendLabel = User::database[network.getFriends(node)[i]].username;
+                dotFile << "    " << nodeLabel << " -- " << friendLabel << ";\n";
             }
         }
     }
