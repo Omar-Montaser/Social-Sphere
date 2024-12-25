@@ -44,7 +44,7 @@ while (true) {
     int choice = _getch();
     if(choice == 27) break;
     int id; cin>>id;
-    if(id < 0 || id >= network.size()) {
+    if(id<0 || id>=network.size()) {
         cout<<"Invalid user ID. Try again.\n";
         continue;
     }
@@ -56,7 +56,7 @@ void addFriend(User& user, Graph& network) {
     system("cls");
     while (true) {
         cout << "Enter the ID of the friend you want to add (or press ESC to go back): ";
-
+        
         char input = _getch();
         if (input == 27) // ESC key
             break;

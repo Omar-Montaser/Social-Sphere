@@ -62,26 +62,6 @@ Queue<QueueElement>::~Queue() {
         currPtr = nextPtr;
     }
 }
-
-template <typename QueueElement>
-const Queue<QueueElement>& Queue<QueueElement>::operator=(const Queue<QueueElement>& rhs) {
-    if (this != &rhs) {
-        this->~Queue();
-        if (rhs.empty()) {
-            myFront = myBack = NULL;
-        } else {
-            myFront = myBack = new Queue<QueueElement>::Node(rhs.front());
-            Queue<QueueElement>::NodePointer rhsPtr = rhs.myFront->next;
-            while (rhsPtr != NULL) {
-                myBack->next = new Queue<QueueElement>::Node(rhsPtr->data);
-                myBack = myBack->next;
-                rhsPtr = rhsPtr->next;
-            }
-        }
-    }
-    return *this;
-}
-
 template <typename QueueElement>
 bool Queue<QueueElement>::empty() const {
     return myFront == NULL;
