@@ -15,6 +15,7 @@
         "valarray": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "algorithm": "cpp"
     }
 }

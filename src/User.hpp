@@ -33,4 +33,5 @@ class User {
 
     static void initializeDatabase();
     static void searchUser(string name, bool& found,User& foundUser);
+    static void searchUser(string name, bool& found);
 };

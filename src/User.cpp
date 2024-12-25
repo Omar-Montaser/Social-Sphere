@@ -25,8 +25,18 @@ void User::initializeDatabase(){
 
 void User::searchUser(string name, bool& found,User& foundUser) {
     for (int i = 0; i <database.getSize(); ++i) {
-        if (database[i].username==name)
-            foundUser=database[i];
+        if (database[i].username==name){
+            foundUser=database[i],found=true;
             return;
+           }
     }
+}
+void User::searchUser(string name, bool& found) {
+    for (int i = 0; i <database.getSize(); ++i) {
+        if (database[i].username==name){
+            found=true;
+            return;
+        }
+    }
+    found=false;
 }
