@@ -19,8 +19,6 @@ public:
     void dequeue();
     int size();
     QueueElement bottom();
-    QueueElement nthElement(int n);
-    Queue<QueueElement> mergedAscendinglyWith(const Queue<QueueElement>& q2);
 
 private:
     class Node {
@@ -165,44 +163,4 @@ QueueElement Queue<QueueElement>::bottom() {
     return garbage;
 }
 
-template <typename QueueElement>
-QueueElement Queue<QueueElement>::nthElement(int n) {
-    Queue::NodePointer nptr = myFront;
-    int counter = 1;
-    while (counter < n && nptr != 0)
-    {
-        counter++;
-        nptr = nptr->next;
-    }
-    if (counter == n)
-        return nptr->data;
-    // else
-    cerr << "Queue has no " << n << "-th element -- returning a garbage value\n";
-    QueueElement garbage;
-    return garbage;
-}
-
-template <typename QueueElement>
-Queue<QueueElement> Queue<QueueElement>::mergedAscendinglyWith(const Queue<QueueElement>& q2) {
-    Queue<QueueElement> q;
-    NodePointer myPtr = myFront, q2Ptr = q2.myFront;
-    while (myPtr != NULL && q2Ptr != NULL) {
-        if (myPtr->data < q2Ptr->data) {
-            q.enqueue(myPtr->data);
-            myPtr = myPtr->next;
-        } else {
-            q.enqueue(q2Ptr->data);
-            q2Ptr = q2Ptr->next;
-        }
-    }
-    while (myPtr != NULL) {
-        q.enqueue(myPtr->data);
-        myPtr = myPtr->next;
-    }
-    while (q2Ptr != NULL) {
-        q.enqueue(q2Ptr->data);
-        q2Ptr = q2Ptr->next;
-    }
-    return q;
-}
 #endif

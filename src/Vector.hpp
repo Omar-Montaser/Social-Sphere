@@ -39,6 +39,7 @@ public:
     void reserve(size_t new_capacity);
     void resize(size_t new_size, const T& value);
     void erase(size_t index);
+    void remove(T element);
     void insert(size_t index, const T& value);
 
 private:
@@ -120,7 +121,6 @@ Vector<T>& Vector<T>::operator=(Vector&& other) noexcept {
     return *this;
 }
 
-// Element access
 template <typename T>
 T& Vector<T>::operator[](size_t index) {
     return data[index];
@@ -221,18 +221,24 @@ void Vector<T>::resize(size_t new_size, const T& value) {
 
 template <typename T>
 void Vector<T>::erase(size_t index) {
-    for (size_t i = index; i < size - 1; ++i) {
+    for (size_t i = index; i < size - 1; ++i)
         data[i] = data[i + 1];
-    }
     --size;
 }
 
 template <typename T>
+void Vector<T>::remove(T element) {
+    for (size_t i = 0; i < size;) {
+        if (data[i] == element) erase(i);
+        else ++i;
+    }
+}
+template <typename T>
 void Vector<T>::insert(size_t index, const T& value) {
     if (size == capacity) reserve(capacity == 0 ? 1 : capacity * 2);
-    for (size_t i = size; i > index; --i) {
+    for (size_t i = size; i > index; --i)
         data[i] = data[i - 1];
-    }
+    
     data[index] = value;
     ++size;
 }
